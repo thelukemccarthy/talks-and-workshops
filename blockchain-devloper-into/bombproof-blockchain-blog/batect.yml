@@ -10,15 +10,23 @@ containers:
       enabled: true
       home_directory: /home/container-user
 
+  ganache-env:
+    image: trufflesuite/ganache-cli:v6.7.0
+    ports:
+      - local: 8545
+        container: 8545
+    run_as_current_user:
+      enabled: false
+
 tasks:
-  shell:
-    description: Install deps; Start a shell in the development environment.
+  website-shell:
+    description: Shell for the build env
     group: Utility tasks
     run:
       container: build-env
       command: sh
 
-  start-website:
+  website-start:
     description: Start the react app frontend for the bulletproof blockchain blog
     run:
       working_directory: /src/website
@@ -27,3 +35,9 @@ tasks:
         - local: 3000
           container: 3000
       command: sh -c 'yarn install && yarn start'
+
+  ganache-start:
+    description: Start Ganache to provide an Ethereum dev environment
+    run:
+      container: ganache-env
+      command: ganache-cli --account_keys_path --accounts 10 --deterministic --mnemonic "lion today perfect mosquito actual wait magnet rent all sun unhappy sell"
