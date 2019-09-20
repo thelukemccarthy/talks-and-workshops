@@ -1,0 +1,29 @@
+containers:
+  build-env:
+    image: node:10-alpine
+    volumes:
+      - local: .
+        container: /src
+        options: cached
+    working_directory: /src
+    run_as_current_user:
+      enabled: true
+      home_directory: /home/container-user
+
+tasks:
+  shell:
+    description: Install deps; Start a shell in the development environment.
+    group: Utility tasks
+    run:
+      container: build-env
+      command: sh
+
+  start-website:
+    description: Start the react app frontend for the bulletproof blockchain blog
+    run:
+      working_directory: /src/website
+      container: build-env
+      ports:
+        - local: 3000
+          container: 3000
+      command: sh -c 'yarn install && yarn start'
