@@ -1,11 +1,20 @@
 containers:
+  curl-env:
+    image: appropriate/curl:latest
+    run_as_current_user:
+      enabled: true
+      home_directory: /home/container-user
+
   build-env:
+#    build_directory: ./docker/node10
     image: node:10-alpine
     volumes:
       - local: .
         container: /src
         options: cached
     working_directory: /src
+    environment:
+      YARN_CACHE_FOLDER: ./yarn_cache
     run_as_current_user:
       enabled: true
       home_directory: /home/container-user
@@ -16,18 +25,47 @@ containers:
       - local: 8545
         container: 8545
     run_as_current_user:
-      enabled: false
+      enabled: true
+      home_directory: /home/container-user
+    command: ganache-cli --account_keys_path --accounts 10 --deterministic --mnemonic "lion today perfect mosquito actual wait magnet rent all sun unhappy sell"
+
+  ipfs-env:
+    image: ipfs/go-ipfs
+    ports:
+      - local: 4001
+        container: 4001
+      - local: 5001
+        container: 5001
+      - local: 8080
+        container: 8080
+    run_as_current_user:
+      enabled: true
+      home_directory: /home/container-user
 
 tasks:
+  curl-shell:
+    description: Shell for running curl commands against ipfs and ganache
+    group: Utility tasks
+    run:
+      container: curl-env
+      command: sh
+    dependencies:
+      - ipfs-env
+      - ganache-env
+
   website-shell:
     description: Shell for the build env
     group: Utility tasks
     run:
       container: build-env
       command: sh
+    dependencies:
+      - ipfs-env
+      - ganache-env
 
   website-start:
     description: Start the react app frontend for the bulletproof blockchain blog
+    privileged: true
     run:
       working_directory: /src/website
       container: build-env
@@ -35,9 +73,16 @@ tasks:
         - local: 3000
           container: 3000
       command: sh -c 'yarn install && yarn start'
+    dependencies:
+      - ipfs-env
+      - ganache-env
 
   ganache-start:
     description: Start Ganache to provide an Ethereum dev environment
     run:
       container: ganache-env
-      command: ganache-cli --account_keys_path --accounts 10 --deterministic --mnemonic "lion today perfect mosquito actual wait magnet rent all sun unhappy sell"
+
+  ipfs-start:
+    description: Start IPFS to store files on the blockchain
+    run:
+      container: ipfs-env
