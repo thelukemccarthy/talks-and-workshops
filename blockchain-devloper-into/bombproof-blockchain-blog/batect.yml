@@ -6,7 +6,6 @@ containers:
       home_directory: /home/container-user
 
   build-env:
-#    build_directory: ./docker/node10
     image: node:10-alpine
     volumes:
       - local: .
