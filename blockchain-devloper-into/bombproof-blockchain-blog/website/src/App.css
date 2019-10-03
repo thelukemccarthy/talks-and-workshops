@@ -1,16 +1,11 @@
-.App {
+.centerAlign {
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
-}
-
 .App-header {
+  text-align: center;
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 10vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -23,11 +18,24 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.blog-post {
+  padding: 0 10%;
+}
+
+.blog-post-title {
+  margin: 0;
+  padding-top: 5%;
+}
+
+.blog-post-publish-date {
+  font-weight: lighter;
+}
+
+.blog-post-content {
+  padding: 1.5em 0;
+}
+
+.blog-post-content p {
+  text-indent: 2em;
+  margin: 0;
 }
