@@ -1,9 +1,6 @@
 containers:
   curl-env:
     image: appropriate/curl:latest
-    run_as_current_user:
-      enabled: true
-      home_directory: /home/container-user
 
   build-env:
     image: node:10-alpine
@@ -14,9 +11,6 @@ containers:
     working_directory: /src
     environment:
       YARN_CACHE_FOLDER: ./yarn_cache
-    run_as_current_user:
-      enabled: true
-      home_directory: /home/container-user
 
   ganache-env:
     image: trufflesuite/ganache-cli:v6.7.0
@@ -64,7 +58,6 @@ tasks:
 
   website-start:
     description: Start the react app frontend for the bulletproof blockchain blog
-    privileged: true
     run:
       working_directory: /src/website
       container: build-env
