@@ -11,18 +11,39 @@ const getBlogPosts = () => (
       <div className="blog-post-content"><p>{item.content}</p></div>
       <div className="blog-post-author">Written by {item.author}</div>
       { getComments(item.id) }
+      { addComment(item.id) }
     </div>
   ))
 );
 
 const getComments = (blogPostId) => {
   let relevant = comments.filter(comment => comment.blogPostId === blogPostId);
-  return relevant.map((item, index) => {
-    return (<div key={`${blogPostId}-${index}`}>
-      <span>Author {item.author} </span>
-      <span> {item.comment} </span>
+  return relevant.map((comment, index) => {
+    return (<div key={`${blogPostId}-${index}`} className="blog-post-comment">
+      <span>Name {comment.author} </span>
+      <span> {comment.text} </span>
     </div>)
   });
+};
+
+const addComment = (blogPostId) => {
+  return <div key={`add-comment-${blogPostId}`} className="blog-post-add-comment">
+    <div>
+      <label>
+        <span>Name</span>
+        <input type="text" name="comment-name" />
+      </label>
+      <div>
+        <label>
+          <span>Comment</span>
+          <textarea name="comment-text"></textarea>
+        </label>
+      </div>
+      <div>
+        <input type="submit" value="Comment"/>
+      </div>
+    </div>
+  </div>
 };
 
 function App() {

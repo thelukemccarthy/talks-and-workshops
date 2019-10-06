@@ -39,3 +39,24 @@
   text-indent: 2em;
   margin: 0;
 }
+
+.blog-post-author {
+  padding-bottom: 1.5em;
+}
+
+.blog-post-comment {
+  padding: 0.5em 0;
+}
+
+.blog-post-add-comment div label span {
+  display: inline-block;
+  min-width: 10em;
+  width: 10em;
+  max-width: 20em;
+  padding: 1em 0;
+}
+
+
+.blog-post-add-comment {
+  padding-top: 1em;
+}
