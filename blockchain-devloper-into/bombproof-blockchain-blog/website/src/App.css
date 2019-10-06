@@ -18,13 +18,17 @@
   color: #61dafb;
 }
 
-.blog-post {
+.blog-post, .add-blog-post {
   padding: 0 10%;
 }
 
-.blog-post-title {
+.blog-post-title, .add-blog-post {
   margin: 0;
-  padding-top: 5%;
+  padding-top: 10%;
+}
+
+.add-blog-post {
+  margin-bottom: 20%;
 }
 
 .blog-post-publish-date {
@@ -48,14 +52,13 @@
   padding: 0.5em 0;
 }
 
-.blog-post-add-comment div label span {
+.blog-post-add-comment div label span, .add-blog-post  div label span{
   display: inline-block;
   min-width: 10em;
   width: 10em;
   max-width: 20em;
   padding: 1em 0;
 }
-
 
 .blog-post-add-comment {
   padding-top: 1em;

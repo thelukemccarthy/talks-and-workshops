@@ -46,6 +46,39 @@ const addComment = (blogPostId) => {
   </div>
 };
 
+const createNewBlogPost = ()=> {
+  return <div className="add-blog-post">
+    <h3>Create new post</h3>
+    <div>
+      <label>
+        <span>Title</span>
+        <input type="text" name="blog-post-Title"/>
+      </label>
+    </div>
+    <div>
+      <label>
+        <span>Publish Date</span>
+        <input type="text" name="blog-post-publish-date"/>
+      </label>
+    </div>
+    <div>
+      <label>
+        <span>Author</span>
+        <input type="text" name="blog-post-author"/>
+      </label>
+    </div>
+    <div>
+      <label>
+        <span>Content</span>
+        <textarea name="blog-post-content"/>
+      </label>
+    </div>
+    <div>
+      <input type="submit" value="Post Blog"/>
+    </div>
+  </div>
+};
+
 function App() {
   return (
     <div className="App">
@@ -53,6 +86,7 @@ function App() {
         Bulletproof Blockchain Blog
       </header>
       { getBlogPosts() }
+      { createNewBlogPost() }
     </div>
   );
 }
