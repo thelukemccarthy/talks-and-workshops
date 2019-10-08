@@ -3,20 +3,20 @@ import './App.css';
 import getBlogPosts from './data/blog-posts';
 import getComments from './data/comments'
 
-const displayBlogPosts = (blogPosts, comments) => (
+const DisplayBlogPosts = (blogPosts, comments) => (
   blogPosts.map((blogPost, index) => (
     <div key={`blogpost-${index}`} className="blog-post">
       <h1 className="blog-post-title">{blogPost.title}</h1>
       <div className="blog-post-publish-date">Publish: {blogPost.published}</div>
       <div className="blog-post-content"><p>{blogPost.content}</p></div>
       <div className="blog-post-author">Written by {blogPost.author}</div>
-      { displayComments(comments, blogPost.id) }
-      { addComment(blogPost.id) }
+      { DisplayComments(comments, blogPost.id) }
+      { AddComment(blogPost.id) }
     </div>
   ))
 );
 
-const displayComments = (comments, blogPostId) => {
+const DisplayComments = (comments, blogPostId) => {
   let relevant = comments.filter(comment => comment.blogPostId === blogPostId);
   return relevant.map((comment, index) => {
     return (<div key={`${blogPostId}-${index}`} className="blog-post-comment">
@@ -26,7 +26,7 @@ const displayComments = (comments, blogPostId) => {
   });
 };
 
-const addComment = (blogPostId) => {
+const AddComment = (blogPostId) => {
   return <div key={`add-comment-${blogPostId}`} className="blog-post-add-comment">
     <div>
       <label>
@@ -46,31 +46,51 @@ const addComment = (blogPostId) => {
   </div>
 };
 
-const createNewBlogPost = ()=> {
+const CreateNewBlogPost = (blogPosts, setBlogPosts)=> {
+  const blankBlogPost = {
+    id:"",
+    title: "",
+    published: "",
+    author: "",
+    content: ""
+  };
+
+  const [newBlogPost, setNewBlogPost] = useState(blankBlogPost);
+
+  const updateNewBlogPost = (event) => {
+    const updatedBlogPost = Object.assign({}, newBlogPost, {[event.target.name]: event.target.value});
+    setNewBlogPost(updatedBlogPost);
+  };
+
+  const postBlog = () => {
+    setBlogPosts([...blogPosts, {...newBlogPost}]);
+    setNewBlogPost(blankBlogPost);
+  };
+
   return <div className="add-blog-post">
     <h3>Create new post</h3>
     <div>
       <label>
         <span>Title</span>
-        <input type="text" name="blog-post-Title"/>
+        <input type="text" name="title" value={newBlogPost.title} onChange={updateNewBlogPost} />
       </label>
     </div>
     <div>
       <label>
         <span>Publish Date</span>
-        <input type="text" name="blog-post-publish-date"/>
+        <input type="text" name="published" value={newBlogPost.published} onChange={updateNewBlogPost} />
       </label>
     </div>
     <div>
       <label>
         <span>Author</span>
-        <input type="text" name="blog-post-author"/>
+        <input type="text" name="author" value={newBlogPost.author} onChange={updateNewBlogPost} />
       </label>
     </div>
     <div>
       <label>
         <span>Content</span>
-        <textarea name="blog-post-content"/>
+        <textarea name="content" value={newBlogPost.content} onChange={updateNewBlogPost} />
       </label>
     </div>
     <div>
@@ -88,8 +108,8 @@ function App() {
       <header className="App-header centerAlign">
         Bulletproof Blockchain Blog
       </header>
-      { displayBlogPosts(blogPosts, comments) }
-      { createNewBlogPost(blogPosts) }
+      { DisplayBlogPosts(blogPosts, comments, setBlogPosts) }
+      { CreateNewBlogPost(blogPosts, setBlogPosts) }
     </div>
   );
 }
