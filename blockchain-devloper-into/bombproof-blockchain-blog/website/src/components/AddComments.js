@@ -10,7 +10,6 @@ const AddComment = (blogPostId, comments, setComments) => {
   const [newComment, setNewComment] = useState(blankComment);
 
   const updateNewComment = (event) => {
-    console.log('name: ', event.target.name, ' value: ', event.target.value);
     const updatedBlogPost = Object.assign({}, newComment, {[event.target.name]: event.target.value});
     setNewComment(updatedBlogPost);
   };
