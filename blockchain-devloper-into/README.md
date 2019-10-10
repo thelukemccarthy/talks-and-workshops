@@ -1,5 +1,16 @@
 # Blockchain Developer Intro Workshop
 
+Blurb: 
+Have you ever wonder what's blockchain? 
+Do you wonder what blockchain can actually be used for? 
+Do you want to build something that can never be taken down?
+Then come to Blockchain SuperFriday!
+We will cover
+ 1. What is blockchain
+ 2. What you could and shouldn't use it for
+ 3. Build an application on the Ethereum and IPFS blockchains
+
+
 The following is a 3 hour workshop designed to introduce developers to blockchain and to creating a distributed app 
 using Ethereum and InterPlanetary File System (IPFS)
 
