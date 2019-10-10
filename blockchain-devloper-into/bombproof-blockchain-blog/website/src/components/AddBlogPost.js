@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import uuidv4 from 'uuid/v4';
 
-const CreateNewBlogPost = (blogPosts, setBlogPosts)=> {
+const AddBlogPost = (blogPosts, setBlogPosts, comments, setComments) => {
   const blankBlogPost = {
-    id:"",
+    id:uuidv4(),
     title: "",
     published: "",
     author: "",
@@ -17,6 +18,7 @@ const CreateNewBlogPost = (blogPosts, setBlogPosts)=> {
   };
 
   const postBlog = () => {
+    setComments({...comments, [newBlogPost.id]: [] });
     setBlogPosts([...blogPosts, {...newBlogPost}]);
     setNewBlogPost(blankBlogPost);
   };
@@ -53,4 +55,4 @@ const CreateNewBlogPost = (blogPosts, setBlogPosts)=> {
   </div>
 };
 
-export default CreateNewBlogPost;
+export default AddBlogPost;

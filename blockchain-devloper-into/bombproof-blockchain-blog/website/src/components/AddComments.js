@@ -1,34 +1,41 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 const AddComment = (blogPostId, comments, setComments) => {
   const blankComment = {
     blogPostId,
     author: "",
     text: "",
+    unpublished: true
   };
 
-  const [newComment, setNewComment] = useState(blankComment);
+  if(!(comments[blogPostId].find(comment => comment.unpublished))){
+    const commentsCopy = { ...comments };
+    commentsCopy[blogPostId].push(blankComment);
+    setComments(commentsCopy);
+  }
 
   const updateNewComment = (event) => {
-    const updatedBlogPost = Object.assign({}, newComment, {[event.target.name]: event.target.value});
-    setNewComment(updatedBlogPost);
+    const updatedBlogPost = Object.assign({}, comments, comments[blogPostId][comments[blogPostId].length -1][event.target.name] = event.target.value);
+    setComments(updatedBlogPost);
   };
 
   const addComment = () => {
-    setComments([...comments, {...newComment}]);
-    setNewComment(blankComment);
+    const updatedBlogPost = Object.assign({}, comments, delete comments[blogPostId][comments[blogPostId].length -1].unpublished);
+    setComments(updatedBlogPost);
   };
+
+  const getValue = (name) => (comments[blogPostId].find((comment) => comment.unpublished)[name]);
 
   return <div key={`add-comment-${blogPostId}`} className="blog-post-add-comment">
     <div>
       <label>
         <span>Name</span>
-        <input type="text" name="author" value={newComment.author} onChange={updateNewComment}/>
+        <input type="text" name="author" value={getValue('author')} onChange={updateNewComment}/>
       </label>
       <div>
         <label>
           <span>Comment</span>
-          <textarea name="text" value={newComment.text} onChange={updateNewComment}/>
+          <textarea name="text" value={getValue('text')} onChange={updateNewComment}/>
         </label>
       </div>
       <div>
