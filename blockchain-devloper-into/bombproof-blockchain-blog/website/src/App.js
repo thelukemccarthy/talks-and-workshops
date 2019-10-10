@@ -6,15 +6,8 @@ import getBlogPosts from './data/blog-posts';
 import getComments from "./data/comments";
 
 function App() {
-  const struturedComments = {};
-  getComments.forEach(comment => {
-    struturedComments[comment.blogPostId]?
-      struturedComments[comment.blogPostId].push(comment):
-      struturedComments[comment.blogPostId] = [comment];
-  });
-
-  const [blogPosts, setBlogPosts] = useState(getBlogPosts);
-  const [comments, setComments] = useState(struturedComments);
+  const [blogPosts, setBlogPosts] = useState(getBlogPosts());
+  const [comments, setComments] = useState(getComments());
 
   return (
     <div className="App">

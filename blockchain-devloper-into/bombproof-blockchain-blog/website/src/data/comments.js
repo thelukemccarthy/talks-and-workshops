@@ -1,4 +1,4 @@
-export default [
+const commentsData = [
   {
     blogPostId: "0b66024713c44d84989699e3f6b60fb0cc69c8451f2f19732aa67b8fbe961d19",
     author: "Author 1",
@@ -15,3 +15,16 @@ export default [
     text: "Blog post 2, comment 2",
   },
 ];
+
+const getComments = () => {
+  const struturedComments = {};
+  commentsData.forEach(comment => {
+    struturedComments[comment.blogPostId]?
+      struturedComments[comment.blogPostId].push(comment):
+      struturedComments[comment.blogPostId] = [comment];
+  });
+
+  return struturedComments;
+};
+
+export default getComments;

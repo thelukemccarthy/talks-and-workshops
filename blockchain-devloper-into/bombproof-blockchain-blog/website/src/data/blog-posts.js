@@ -1,4 +1,4 @@
-export default [
+const blogPostData = [
   {
     id:"0b66024713c44d84989699e3f6b60fb0cc69c8451f2f19732aa67b8fbe961d19",
     title: "Blog Post",
@@ -14,3 +14,9 @@ export default [
     content: "This is another blog post ",
   },
 ];
+
+const getBlogPosts = () => {
+  return blogPostData;
+};
+
+export default getBlogPosts;
