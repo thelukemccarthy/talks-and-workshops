@@ -37,6 +37,9 @@ module.exports = {
         "react"
     ],
     "rules": {
-        "semi": 2
+        "semi": 2,
+        "indent": ["error", 2],
+        "quotes": ["error", "prefer-single"]
+        "jsx-quotes": ["error", "prefer-single"]
     }
 };

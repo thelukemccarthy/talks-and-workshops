@@ -14,7 +14,7 @@ function App() {
       <header className="App-header centerAlign">
         Bulletproof Blockchain Blog
       </header>
-        <DisplayBlogPosts blogPosts={blogPosts} />
+        <DisplayBlogPosts blogPosts={blogPosts} comments={comments} />
       {/* { DisplayBlogPosts(blogPosts, comments, setComments) } */}
       {/* { AddBlogPost(blogPosts, setBlogPosts, comments, setComments) } */}
     </div>
