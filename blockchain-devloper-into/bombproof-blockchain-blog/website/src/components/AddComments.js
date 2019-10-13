@@ -1,47 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const AddComment = (blogPostId, comments, setComments) => {
-  // const blankComment = {
-  //   blogPostId,
-  //   author: "",
-  //   text: "",
-  //   unpublished: true
-  // };
+const AddComment = ({ blogPostId, comments, setComments }) => {
+  const [ author, setAuthor ] = useState("");
+  const [ text, setText ] = useState("");
 
-  // if(!(comments[blogPostId].find(comment => comment.unpublished))){
-  //   const commentsCopy = { ...comments };
-  //   commentsCopy[blogPostId].push(blankComment);
-  //   setComments(commentsCopy);
-  // }
-
-  // const updateNewComment = (event) => {
-  //   const updatedBlogPost = Object.assign({}, comments, comments[blogPostId][comments[blogPostId].length -1][event.target.name] = event.target.value);
-  //   setComments(updatedBlogPost);
-  // };
-
-  // const addComment = () => {
-  //   const updatedBlogPost = Object.assign({}, comments, delete comments[blogPostId][comments[blogPostId].length -1].unpublished);
-  //   setComments(updatedBlogPost);
-  // };
-
-  // const getValue = (name) => (comments[blogPostId].find((comment) => comment.unpublished)[name]);
+  const submitComment = () => {
+    setComments({...comments, [blogPostId]: [...comments[blogPostId], { blogPostId, author, text }]})
+  }
 
   return <div key={`add-comment-${blogPostId}`} className="blog-post-add-comment">
-    {/* <div>
+     <div>
       <label>
         <span>Name</span>
-        <input type="text" name="author" value={getValue('author')} onChange={updateNewComment}/>
+        <input type="text" name="author" value={author} onChange={e => setAuthor(e.target.value)}/>
       </label>
       <div>
         <label>
           <span>Comment</span>
-          <textarea name="text" value={getValue('text')} onChange={updateNewComment}/>
+          <textarea name="comment" value={text} onChange={e => setText(e.target.value)}/>
         </label>
       </div>
       <div>
-        <input type="submit" value="Comment" onClick={addComment}/>
+        <input type="submit" value="Submit" onClick={submitComment}/>
       </div>
-    </div> */}
+    </div>
   </div>;
 };
 
