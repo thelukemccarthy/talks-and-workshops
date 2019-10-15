@@ -17,9 +17,6 @@ containers:
     ports:
       - local: 8545
         container: 8545
-    run_as_current_user:
-      enabled: true
-      home_directory: /home/container-user
     command: ganache-cli --account_keys_path --accounts 10 --deterministic --mnemonic "lion today perfect mosquito actual wait magnet rent all sun unhappy sell"
 
   ipfs-env:
@@ -31,9 +28,6 @@ containers:
         container: 5001
       - local: 8080
         container: 8080
-    run_as_current_user:
-      enabled: true
-      home_directory: /home/container-user
 
 tasks:
   curl-shell:
@@ -78,3 +72,9 @@ tasks:
     description: Start IPFS to store files on the blockchain
     run:
       container: ipfs-env
+
+  ipfs-shell:
+    description: Start IPFS to store files on the blockchain
+    run:
+      container: ipfs-env
+      command: /bin/sh
