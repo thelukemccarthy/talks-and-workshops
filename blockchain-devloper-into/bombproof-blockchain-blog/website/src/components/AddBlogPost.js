@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import uuidv4 from "uuid/v4";
+import React, { useState } from 'react';
+import uuidv4 from 'uuid/v4';
 
 const AddBlogPost = ({ blogPosts, setBlogPosts, comments, setComments }) => {
   const blankBlogPost = {
     id: uuidv4(),
-    title: "",
-    published: "",
-    author: "",
-    content: ""
+    title: '',
+    published: '',
+    author: '',
+    content: ''
   };
 
   const [newBlogPost, setNewBlogPost] = useState(blankBlogPost);
@@ -22,14 +22,14 @@ const AddBlogPost = ({ blogPosts, setBlogPosts, comments, setComments }) => {
   };
 
   return (
-    <div className="add-blog-post">
+    <div className='add-blog-post'>
       <h3>Create new post</h3>
       <div>
         <label>
           <span>Title</span>
           <input
-            type="text"
-            name="title"
+            type='text'
+            name='title'
             value={newBlogPost.title}
             onChange={updateNewBlogPost}
           />
@@ -39,8 +39,8 @@ const AddBlogPost = ({ blogPosts, setBlogPosts, comments, setComments }) => {
         <label>
           <span>Publish Date</span>
           <input
-            type="text"
-            name="published"
+            type='text'
+            name='published'
             value={newBlogPost.published}
             onChange={updateNewBlogPost}
           />
@@ -50,8 +50,8 @@ const AddBlogPost = ({ blogPosts, setBlogPosts, comments, setComments }) => {
         <label>
           <span>Author</span>
           <input
-            type="text"
-            name="author"
+            type='text'
+            name='author'
             value={newBlogPost.author}
             onChange={updateNewBlogPost}
           />
@@ -61,14 +61,14 @@ const AddBlogPost = ({ blogPosts, setBlogPosts, comments, setComments }) => {
         <label>
           <span>Content</span>
           <textarea
-            name="content"
+            name='content'
             value={newBlogPost.content}
             onChange={updateNewBlogPost}
           />
         </label>
       </div>
       <div>
-        <input type="submit" value="Post Blog" onClick={postBlog} />
+        <input type='submit' value='Post Blog' onClick={postBlog} />
       </div>
     </div>
   );
