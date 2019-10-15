@@ -6,6 +6,8 @@ const AddComment = ({ blogPostId, comments, setComments }) => {
 
   const submitComment = () => {
     setComments({...comments, [blogPostId]: [...comments[blogPostId], { blogPostId, author, text }]})
+    setAuthor('');
+    setText('');
   }
 
   return <div key={`add-comment-${blogPostId}`} className="blog-post-add-comment">
