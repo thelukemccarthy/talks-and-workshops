@@ -21,6 +21,9 @@ containers:
 
   ipfs-env:
     image: ipfs/go-ipfs
+    volumes:
+      - local: ./ipfs/data
+        container: /data/ipfs
     ports:
       - local: 4001
         container: 4001
