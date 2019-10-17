@@ -84,7 +84,7 @@ You should get a response similar to
 }
 ```
 
-If everything worked, skip the local setup and go to [Send some Ether](##send-some-ether)
+If everything worked, skip the local setup and go to [Send some Ether](#send-some-ether)
 
 ## Setup if running locally
 1. Install git
