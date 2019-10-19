@@ -15,7 +15,7 @@ using Ethereum and IPFS
 
 ## Setting up a Dev Environment
 You have two options for setting up your development environment for this workshop. 
-You can use Batect and Docker or you can install the tools you need on your local machine.
+You can use Batect and Docker or you can install all the tools you need on your local machine.
 I recommend using Batect and Docker setup as it 
 * Simplifies installation
 * Simplifies running all the dependencies
@@ -23,8 +23,10 @@ I recommend using Batect and Docker setup as it
 * You will need a lot less terminal windows open
 
 ## Setup for Both Batect and Local
-1. Checkout the workshop code ```git clone --depth 1 --filter=blob:none --no-checkout "git@github.com:thelukemccarthy/talks-and-workshops.git" blockchain; cd blockchain; git checkout master -- blockchain-devloper-into/``` 
-    1. this will create a new directory called ```blockchain```, inside you will find the directory ```blockchain-devloper-into```
+1. Checkout the workshop code 
+    ```git clone --depth 1 --filter=blob:none --no-checkout "git@github.com:thelukemccarthy/talks-and-workshops.git" blockchain; cd blockchain; git checkout master -- blockchain-devloper-into/``` 
+    1. this will create a new directory called ```blockchain```, inside you will find the directory 
+        ```blockchain-devloper-into```
 1. Install the MetaMask extension/add-on for one of the following browsers 
     1. [Chrome Extension](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn)
     1. [Firefox Add-on](https://addons.mozilla.org/en-US/firefox/addon/ether-metamask/)
@@ -55,7 +57,7 @@ I recommend using Batect and Docker setup as it
 1. Open a new terminal 
 1. Change directory to ```blockchain/blockchain-devloper-into/bombproof-blockchain-blog```
 1. Start the application suite with batect ```./batect website-start```
-1. In a browser go to http://localhost:3000 You should see a very basic blogging website
+1. In a browser go to http://localhost:3000 you should see a very basic blogging website
 1. In a browser go to http://localhost:5001/webui
     #### Please Note   
     * The first load of http://localhost:5001/webui may take more than a minute to load
@@ -93,8 +95,12 @@ If everything worked, skip the local setup and go to [Send some Ether](#send-som
 1. Install ganache-cli
     1. Open a new terminal  
     1. Run the command ```yarn global add ganache-cli```
-    1. Try and run the command ```ganache-cli --account_keys_path --accounts 10 --deterministic --mnemonic "lion today perfect mosquito actual wait magnet rent all sun unhappy sell"``` from the terminal
-    1. If you get the error message "ganache-cli: command not found" you will need to run install with ```sudo yarn global add ganache-cli```
+    1. Try and run the command 
+        ```ganache-cli --account_keys_path --accounts 10 --deterministic --mnemonic "lion today perfect mosquito actual wait magnet rent all sun unhappy sell"``` from the terminal
+    1. If you get the error message "ganache-cli: command not found" check you have the yarn global bin directory on you path
+        * TIP: You can display your yarn global bin directory with the command ```yarn global bin```
+    1. If you still get the error message "ganache-cli: command not found" you will need to run install with sudo
+        ```sudo yarn global add ganache-cli```
     1. If you see the follow you have successfully install ganache-cli
     ```
         Ganache CLI v6.7.0 (ganache-core: 2.8.0)
@@ -112,7 +118,40 @@ If everything worked, skip the local setup and go to [Send some Ether](#send-som
         (8) 0x82389224F7cE112a0a853fb47cD643fbb32F7dc8 (100 ETH)
         (9) 0xE9c0799bc51AA77147942659c364C9F4b81455A6 (100 ETH)
     ```
-1. Open another terminal   
+1. Install Truffle
+    1. Open another terminal
+    1. Run the command ```yarn global add truffle```
+    1. cd into ```blockchain/blockchain-devloper-into/bombproof-blockchain-blog/smart-contract```
+    1. Run the command ```truffle init```
+    1. Select yes when asked 'Proceed anyway'
+    1. If everything worked you should see the following output
+    ```
+        This directory is non-empty...
+        ? Proceed anyway? Yes
+        ✔ Preparing to download
+        ✔ Downloading
+        ✔ Cleaning up temporary files
+        ✔ Setting up box
+        
+        Unbox successful. Sweet!
+        
+        Commands:
+        
+          Compile:        truffle compile
+          Migrate:        truffle migrate
+          Test contracts: truffle test
+    ``` 
+    1. Run the command ```truffle compile```
+    1. If you see the following output truffle is working correctly
+    ```
+    Compiling your contracts...
+    ===========================
+    > Compiling ./contracts/Migrations.sol
+    > Artifacts written to blockchain/blockchain-devloper-into/bombproof-blockchain-blog/smart-contract/build/contracts
+    > Compiled successfully using:
+       - solc: 0.5.8+commit.23d335f2.Emscripten.clang
+
+    ```
 1. Install IPFS https://docs.ipfs.io/guides/guides/install/#installing-from-a-prebuilt-package
     1. Open a terminal and run the command ```ipfs init```
     1. If you see output similar to the following, IPFS has been installed correctly
@@ -130,12 +169,11 @@ If everything worked, skip the local setup and go to [Send some Ether](#send-som
 1. Change directory to ```blockchain/blockchain-devloper-into/bombproof-blockchain-blog/website```
 1. Start the website with the command ```yarn start```
 1. In a browser go to http://localhost:3000 You should see a very basic blogging website
-1. Open another terminal
 1. If you closed ganache-cli in the setup instructions
     1. Open a new terminal 
     1. Run the command ```ganache-cli --account_keys_path --accounts 10 --deterministic --mnemonic "lion today perfect mosquito actual wait magnet rent all sun unhappy sell"```
     1. Leave it running and open another terminal
-1. Run the command ```curl -X POST --data '{"jsonrpc":"2.0","method":"eth_accounts","params":[],"id":1}' http://localhost:8545```
+    1. Run the command ```curl -X POST --data '{"jsonrpc":"2.0","method":"eth_accounts","params":[],"id":1}' http://localhost:8545```
     You should see out similar to the following
     ```
         { 
@@ -174,35 +212,76 @@ You should see out similar to the following
 If all of that worked, you're setup and ready to go 
 
 ## Send some Ether
-Now you have setup you
+Now you have everything setup, let's send some Ether from ganache (Mock Ethereum Blockchain) to MetaMask 
+(Browser Ethereum Wallet)
+1. Open Insomnia or Postman
+1. Create a new Post request to http://localhost:8545 (this is the ganache)
+1. Paste the following body into the request
+    ```  
+      {
+        "jsonrpc":"2.0",
+        "method":"eth_sendTransaction",
+        "params":[{
+            "from": "0x12d39CDaACDcd23E4A6a4859B5A0f11cE90b5Fe4",
+            "to": "",
+            "gas": "0x76c0",
+            "gasPrice": "0x9184e72a000",
+            "value": "10000000000000000000"
+        }],
+        "id":1
+      }
+    ```
+1. Click on orange fox head in the browser toolbar
+1. Log into your wallet, you may need the *Secret Backup Phase* again
+1. Click on the dropdown at the top, it will most likely have the value 'Main Ethereum Network'
+1. Select 'localhost:8545'
+1. Click on 'Account 1' to copy the wallet address
+1. Paste the address into the "to" field of the body of the request
+1. Send the request
+If everything worked you should have 10 Ether in you MetaMask wallet. Don't get to excited it's not real Ether.
+If it's not real Ether what good is it?
+Ganache is a personal Ethereum blockchain which you can use to run tests, execute commands, and inspect state while 
+controlling how the chain operates. [1]:(https://www.trufflesuite.com/ganache)
 
+Because a blockchain, like Ethereum, can't be edited or deleted once a record has been written, we need an environment we
+can control to test our code before we ship to the real blockchain. Ganache is that blockchain.
+[Docs](https://github.com/trufflesuite/ganache-cli) for ganache-cli 
 
-------------------------------------------------------------------------------------------------------------------
-test from docker container  
-``` 
-curl -H "Content-Type: application/json" -X POST --data '{"id":1337,"jsonrpc":"2.0","method":"evm_revert","params":["0x1"]}' http://localhost:8545 
-```
+Metamask is a Ethereum wallet that works with all the test nets including Ganache. Metamask allows you to run Ethereum
+Smart contracts from your browser. 
 
--------------------------------------------------------------------------------------------------------------------
-Send 10 Ether to another account
-```  
-  {
-  	"jsonrpc":"2.0",
-  	"method":"eth_sendTransaction",
-  	"params":[{
-    	"from": "0x12d39CDaACDcd23E4A6a4859B5A0f11cE90b5Fe4",
-    	"to": "0x71FbFb704372cAfd0839e71EBc9ba234c3E44d2B",
-    	"gas": "0x76c0",
-    	"gasPrice": "0x9184e72a000",
-    	"value": "10000000000000000000"
-  	}],
-  	"id":1
-  }
-```  
-    
-* Get Ethereum
-    * Click on oranage fox head in the browser toolbar
-    * Log into your wallet you may need the *Secret Backup Phase* again
-    * Click on  
-from Test Net faucet https://faucet.rinkeby.io/
+## Smart Contracts
+To understand smart contracts you first need to understand that Ethereum is a bit like the JVM, and code can be executed
+on the Ethereum blockchain. Once the code is deployed on the Ethereum blockchain it's called a Distributed Application, 
+or DApp for for short. A smart contract is the code that is deployed to the Ethereum blockchain and is part of a DApp. A 
+DApp might include code including a web fontend that isn't deployed on Ethereum.  
+
+## Intro to Solidity
+"Solidity is an object-oriented, high-level language for implementing smart contracts. Solidity was influenced by C++, 
+Python and JavaScript and is designed to target the Ethereum Virtual Machine (EVM).
+
+Solidity is statically typed, supports inheritance, libraries and complex user-defined types among other features." 
+[2]:(https://solidity.readthedocs.io/en/v0.5.12/)
+
+## Intro to the project
+
+## Store Data in Ethereum
+
+## Why you shouldn't store data in Ethereum
+
+## Whats IPFS
+
+## Store data on IPFS
+
+## Link IPFS data to Ethereum
+
+## Add data from anyone
+
+## Add permissions to the website
+
+## Contract can run out of gas
+
+## Host website on IPFS
+
+## Hacks and Security
  
