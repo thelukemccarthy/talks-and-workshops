@@ -19,6 +19,13 @@ containers:
         container: 8545
     command: ganache-cli --account_keys_path --accounts 10 --deterministic --mnemonic "lion today perfect mosquito actual wait magnet rent all sun unhappy sell"
 
+  truffle-env:
+    build_directory: ./.batect/truffle
+    volumes:
+      - local: ./smart-contract
+        container: /code
+    working_directory: /code
+
   ipfs-env:
     image: ipfs/go-ipfs
     volumes:
@@ -42,6 +49,34 @@ tasks:
     dependencies:
       - ipfs-env
       - ganache-env
+
+  truffle-shell:
+    description: Shell to run truffle commands
+    group: Utility tasks
+    run:
+      container: truffle-env
+      command: bash
+
+  truffle-test:
+    description: Shell to run truffle commands
+    group: Utility tasks
+    run:
+      container: truffle-env
+      command: truffle test
+
+  truffle-build:
+    description: Shell to run truffle commands
+    group: Utility tasks
+    run:
+      container: truffle-env
+      command: truffle build
+
+  truffle-compile:
+    description: Shell to run truffle commands
+    group: Utility tasks
+    run:
+      container: truffle-env
+      command: truffle compile
 
   website-shell:
     description: Shell for the build env
