@@ -217,7 +217,7 @@ Now you have everything setup, let's send some Ether from ganache (Mock Ethereum
 1. Open Insomnia or Postman
 1. Create a new Post request to http://localhost:8545 (this is the ganache)
 1. Paste the following body into the request
-    ```  
+    ```json  
       {
         "jsonrpc":"2.0",
         "method":"eth_sendTransaction",
@@ -263,10 +263,140 @@ Python and JavaScript and is designed to target the Ethereum Virtual Machine (EV
 Solidity is statically typed, supports inheritance, libraries and complex user-defined types among other features." 
 [2]:(https://solidity.readthedocs.io/en/v0.5.12/)
 
+Lets walk through a sample contract as a group, 
+you can find the code in
+``` blockchain/blockchain-devloper-into/sample-smart-contract/contracts ```
+you can find the test code in 
+``` blockchain/blockchain-devloper-into/sample-smart-contract/test ``` 
+
+You can find the (Docs for Solidity)[https://solidity.readthedocs.io/en/v0.5.12/] on the solidity website
+The (Introduction to Smart Contracts)[https://solidity.readthedocs.io/en/v0.5.12/introduction-to-smart-contracts.html]
+Is quite good when you're starting out
+
 ## Intro to the project
+We are going to take a very basic blog, and use blockchain to not only publish content but also host the website.
+Because a blockchain can't be edited or deleted it can never be taken down. This is one of the unique features of
+blockchain
+
+When we look at the data structures for the blog, they will look a bit strange and you might be temped to refactor them. 
+They have been designed so they can be easily stored on a blockchain. Try not to refactor them until you have completed 
+the workshop.
+
+Let's look at the code as a group
 
 ## Store Data in Ethereum
+Let's start by storing a blog post on Ethereum
 
+First lets add some dependencies we need
+1. Open a terminal
+1. cd into ```blockchain/blockchain-devloper-into/bombproof-blockchain-blog/smart-contract```
+1. Run the command ```yarn add -D truffle-assertions```
+
+Next lets setup our tests
+1. cd into ```blockchain/blockchain-devloper-into/bombproof-blockchain-blog/smart-contract```
+1. Run the command ```touch ./test/BlogTest.js```
+1. Run the command ```touch ./contracts/Blog.sol```
+1. Open the file ```./test/BlogTest.js```
+1. Paste in the following code
+```javascript
+    const Blog = artifacts.require('Blog');
+    const truffleAssert = require('truffle-assertions');
+    
+    contract('Blog', accounts => {
+      let contract;
+      beforeEach(async () => {
+        contract = await Blog.new({from: accounts[0]});
+      });
+    
+      describe('can create a blog post', () => {
+        it('can not create a blog post without a title', async () => {
+          await truffleAssert.reverts(contract.post('', {from: accounts[0]}), 'A title is required');
+        });
+      });
+    });
+```
+If you are know any JavaScript testing frameworks this should look very familiar. Infact truffle-assert is a wrapper 
+around mocha. truffle-assert adds a few features to make testing smart contracts easier, like passing in an array of 
+accounts you can use for testing.
+
+Lets run our new test
+For batect
+1. In a terminal cd to ```blockchain/blockchain-devloper-into/bombproof-blockchain-blog```
+1. Run the command ```./batect truffle-test```
+
+For local
+1. In a terminal cd to ```blockchain/blockchain-devloper-into/bombproof-blockchain-blog/smart-contract```
+1. Run the command ```truffle test```
+
+The test fails because the smart contract we are trying to test doesn't exist yet
+Let's get the test to pass. paste the following code into ```contacts/Blog.sol```   
+```solidity
+pragma solidity ^0.5.8;
+
+contract Blog {
+    function checkForEmptyString(string memory _value, string memory _errorMessage) private pure {
+        bytes memory convertedString = bytes(_value);
+        require(convertedString.length > 0, _errorMessage);
+    }
+
+    function post(string memory _title) public {
+        checkForEmptyString(_title, 'A title is required');
+    }
+}
+```
+
+Most of the code above should make sense, but let's go over the things that might not be clear.  
+* Line 1: specifies the version of Solidity we are using
+* Line 3: the key word 'contract' is the same as class in other OO languages. Contract names should start with a capital 
+ letter
+* Lines 4,5,6: Solidity requires you specify if a variable is only held in memory or stored on the blockchain
+* Lines 5,6: check is the string passed in is empty. Solidity doesn't provide any string manipulation functions, however, 
+    third-party string libraries do exist. If you don't use a third party library you will need to do strange things with
+    type conversion
+* Line 6: the require statement checks the first argument is true, if it is false then the contract throws an error. The
+    second argument to require is optional and is the error message that will be returned. This just like throw in other
+    OO languages
+    
+Run the tests again and make sure everything is working
+
+Let's write another test. This time we will provide the title and store it on Ethereum
+Add the following code to BlogTest.js
+```javascript
+  it('given a valid blog post, then the data should be stored', async () => {
+      const blogTitle = 'New Blog Post';
+      await contract.post('New Blog Post');
+      const result = await contract.blogPosts(0);
+      
+      assert.equal(result, blogTitle);
+  });
+```
+You should have a failing test. The following is the code you will need to get the test to pass
+```solidity
+pragma solidity ^0.5.8;
+
+contract Blog {
+    struct BlogPostData {               // add this lines to Blog.sol
+        string title;                   // add this lines to Blog.sol
+    }                                   // add this lines to Blog.sol
+
+    BlogPostData[] public blogPosts;    // add this lines to Blog.sol
+
+    function checkForEmptyString(string memory _value, string memory _errorMessage) private pure {
+        bytes memory convertedString = bytes(_value);
+        require(convertedString.length > 0, _errorMessage);
+    }
+
+    function post(string memory _title) public {
+        checkForEmptyString(_title, 'A title is required');
+        blogPosts.push(BlogPostData(_title)); // add this lines to Blog.sol
+    }
+}
+```
+Nothing surprising here
+Lines 4-6: we added a struct to store the a blog post
+Line 8: we created an array to store all the blog posts
+Line 18: we add the blog post passed in to the array
+    
 ## Why you shouldn't store data in Ethereum
 
 ## Whats IPFS
