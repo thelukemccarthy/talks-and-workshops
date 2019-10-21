@@ -3,12 +3,12 @@ containers:
     image: appropriate/curl:latest
 
   build-env:
-    image: node:10-alpine
+    build_directory: ./.batect/node
     volumes:
       - local: .
         container: /src
         options: cached
-    working_directory: /src
+    working_directory: /src/website
     environment:
       YARN_CACHE_FOLDER: ./yarn_cache
 
