@@ -78,6 +78,15 @@ tasks:
       container: truffle-env
       command: truffle compile
 
+  truffle-migrate:
+    description: Shell to run truffle commands
+    group: Utility tasks
+    run:
+      container: truffle-env
+      command: truffle migrate --network batect
+    dependencies:
+      - ganache-env
+
   website-shell:
     description: Shell for the build env
     group: Utility tasks
@@ -97,6 +106,8 @@ tasks:
         - local: 3000
           container: 3000
       command: sh -c 'yarn install && yarn start'
+    prerequisites:
+      - truffle-migrate
     dependencies:
       - ipfs-env
       - ganache-env
