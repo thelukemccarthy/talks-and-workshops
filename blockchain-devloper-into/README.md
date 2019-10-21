@@ -375,11 +375,11 @@ You should have a failing test. The following is the code you will need to get t
 pragma solidity ^0.5.8;
 
 contract Blog {
-    struct BlogPostData {               // add this lines to Blog.sol
-        string title;                   // add this lines to Blog.sol
-    }                                   // add this lines to Blog.sol
+    struct BlogPostData {               // add this line to Blog.sol
+        string title;                   // add this line to Blog.sol
+    }                                   // add this line to Blog.sol
 
-    BlogPostData[] public blogPosts;    // add this lines to Blog.sol
+    BlogPostData[] public blogPosts;    // add this line to Blog.sol
 
     function checkForEmptyString(string memory _value, string memory _errorMessage) private pure {
         bytes memory convertedString = bytes(_value);
@@ -388,17 +388,117 @@ contract Blog {
 
     function post(string memory _title) public {
         checkForEmptyString(_title, 'A title is required');
-        blogPosts.push(BlogPostData(_title)); // add this lines to Blog.sol
+        BlogPostData memory newPost = BlogPostData(_title); // add this line to Blog.sol
+        blogPosts.push(newPost);                            // add this line to Blog.sol
     }
 }
 ```
-Nothing surprising here
-Lines 4-6: we added a struct to store the a blog post
-Line 8: we created an array to store all the blog posts
-Line 18: we add the blog post passed in to the array
-    
+Nothing to surprising here
+* Lines 4-6: Add a struct to store the a blog post
+* Line 8: Creat an array to store all the blog posts
+* Line 18: Create a new instance of BlogPostData struct. In Solidity you create a new instance of a struct by calling it
+* like a function. The order of the arguments should be the same as the order the fields are declared in.
+* Line 19: Add the blog post passed in to the array
+
+Now you have added the title field of a blog post add the following fields. For now use string as the type for all 
+fields and don't forget to add tests.
+```solidity
+    title
+    published
+    author
+    content
+```
+
+Now all the fields we need have been added let's create a function to return a single blog post. Write the follow test
+```javascript
+   it('given a blog posts has been stored, then getPost should return the blog post', async () => {
+      const blogTitle = 'New Blog Post';
+      const published = '2019-10-01';
+      const author = 'Homer Simpson';
+      const content = 'Mmmmmm Donuts';
+      await contract.post(blogTitle, published, author, content);
+      const result = await contract.getPost(0);
+
+      assert.equal(result[0], blogTitle);
+      assert.equal(result[1], published);
+      assert.equal(result[2], author);
+      assert.equal(result[3], content);
+    });
+```
+You might have noticed we have multiple asserts and the result is an array.
+This is a limitation of Solidity, as currently it can't return user defined types. 
+Add the following function into Blog.sol to get the tests to pass.
+```solidity
+    function getPost(uint256 _index) public view returns(string memory, string memory, string memory, string memory) {
+        BlogPostData memory blogPost = blogPosts[_index];
+        return (
+            blogPost.title,
+            blogPost.published,
+            blogPost.author,
+            blogPost.content
+        );
+    }
+```
+The above function introduces a few new concepts let's go over them now.
+* Line 1: The view keyword is introduced. This tell the Ethereum data is only read in the contract. Without the view 
+    keyword this function would return the blockchain transaction and not the values we expect to see.  
+* Line 1: Solidity can't return user defined types, however it can return mulitple values. Because all of the values in 
+    BlogPostData are strings we return four strings. What is returned to our test is the following
+    ```json
+        Result {
+            '0': 'New Blog Post',
+            '1': '2019-10-01',
+            '2': 'Homer Simpson',
+            '3': 'Mmmmmm Donuts', 
+        }
+    ```
+* Lines 1,2: Use the memory keyword to tell Ethereum to only store values in memory and not on the blockchain
+* Lines 3-8: Return the multiple values, we wrap all the return values in () so Ethereum knows all the values to return
+
+Currently user define types can't be returned from functions in Solidity, that might change in the future. 
+We can see this by turning on an experimental feature.
+The following code is not needed for this workshop, I just want you see 
+```solidity
+pragma solidity ^0.5.8;
+pragma experimental ABIEncoderV2; // add this line after line 1 of the contract, to turn on the experimental feature
+```
+Add this function inside the contract 
+```solidity
+    function getPosts() public view returns (BlogPostData[] memory){
+        return blogPosts;
+    }
+```
+The Solidity code becomes a lot simpler, however what is returned might not be what you expect.
+The following is what is returned from the getPosts() function to our Javascript tests
+```javascript
+[ 
+  [ 
+    'New Blog Post',
+    '2019-10-01',
+    'Homer Simpson',
+    'Mmmmmm Donuts',
+    title: 'New Blog Post',
+    published: '2019-10-01',
+    author: 'Homer Simpson',
+    content: 'Mmmmmm Donuts', 
+  ],
+]
+```
+You might have expected an array of JSON objects, instead an array of arrays is returned. The values are listed in an 
+array then repeated with labels.
+
+A final note about returning values using the ABIEncoderV2, you will get the following compiler warning
+```
+    Blog.sol:3:1: Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+    pragma experimental ABIEncoderV2;
+    ^-------------------------------^
+```
+
+## Connect the website to out Ethereum Smart Contract 
+
 ## Why you shouldn't store data in Ethereum
 
+(source)[https://itnext.io/build-a-simple-ethereum-interplanetary-file-system-ipfs-react-js-dapp-23ff4914ce4e]
 ## Whats IPFS
 
 ## Store data on IPFS
@@ -409,7 +509,7 @@ Line 18: we add the blog post passed in to the array
 
 ## Add permissions to the website
 
-## Contract can run out of gas
+## Contracts can run out of gas
 
 ## Host website on IPFS
 
