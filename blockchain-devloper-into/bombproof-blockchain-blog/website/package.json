@@ -10,7 +10,6 @@
     "lint": "eslint src/**/*.js --ignore-pattern node_modules/"
   },
   "dependencies": {
-    "@testing-library/react": "^9.3.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-scripts": "3.1.1"
@@ -28,6 +27,8 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^4.1.2",
+    "@testing-library/react": "^9.3.0",
     "babel-jest": "^24.9.0",
     "eslint-plugin-jest": "^22.17.0",
     "eslint-plugin-react": "^7.14.3",
