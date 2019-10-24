@@ -42,7 +42,7 @@ containers:
 tasks:
   curl-shell:
     description: Shell for running curl commands against ipfs and ganache
-    group: Utility tasks
+    group: shell
     run:
       container: curl-env
       command: sh
@@ -50,46 +50,79 @@ tasks:
       - ipfs-env
       - ganache-env
 
-  truffle-shell:
-    description: Shell to run truffle commands
-    group: Utility tasks
+  ganache-start:
+    description: Start Ganache to provide an Ethereum dev environment
+    group: ganache
     run:
-      container: truffle-env
-      command: bash
+      container: ganache-env
 
-  truffle-test:
-    description: Shell to run truffle commands
-    group: Utility tasks
+  ipfs-shell:
+    description: Shell to run IPFS commands
+    group: shell
     run:
-      container: truffle-env
-      command: truffle test
+      container: ipfs-env
+      command: sh -c
+
+  ipfs-start:
+    group: ipfs
+    description: Start IPFS to store files on the blockchain
+    run:
+      container: ipfs-env
 
   truffle-build:
-    description: Shell to run truffle commands
-    group: Utility tasks
+    description: Build the smart contract
+    group: truffle commands
     run:
       container: truffle-env
       command: truffle build
 
   truffle-compile:
-    description: Shell to run truffle commands
-    group: Utility tasks
+    description: Compile the smart contract
+    group: truffle commands
     run:
       container: truffle-env
       command: truffle compile
 
   truffle-migrate:
-    description: Shell to run truffle commands
-    group: Utility tasks
+    description: Deploy the smart contract to the ganache-env container
+    group: truffle commands
     run:
       container: truffle-env
       command: truffle migrate --network batect
     dependencies:
       - ganache-env
 
+  truffle-shell:
+    description: Shell to run truffle commands
+    group: shell
+    run:
+      container: truffle-env
+      command: bash
+
+  truffle-test:
+    description: Run the test for the smart contract
+    group: truffle commands
+    run:
+      container: truffle-env
+      command: truffle test
+
+  website-build:
+    description: Build an optimised production build of the bulletproof blockchain blog
+    group: website
+    run:
+      container: build-env
+      command: yarn build
+
+  website-install:
+    description: Run yarn install for the bulletproof blockchain blog
+    group: website
+    run:
+      container: build-env
+      command: yarn install
+
   website-shell:
     description: Shell for the build env
-    group: Utility tasks
+    group: shell
     run:
       container: build-env
       command: sh
@@ -98,7 +131,8 @@ tasks:
       - ganache-env
 
   website-start:
-    description: Start the react app frontend for the bulletproof blockchain blog
+    description: Start the react app frontend and all dependances for the bulletproof blockchain blog
+    group: website
     run:
       working_directory: /src/website
       container: build-env
@@ -112,18 +146,9 @@ tasks:
       - ipfs-env
       - ganache-env
 
-  ganache-start:
-    description: Start Ganache to provide an Ethereum dev environment
+  website-test:
+    description: Run the tests for the bulletproof blockchain blog
+    group: website
     run:
-      container: ganache-env
-
-  ipfs-start:
-    description: Start IPFS to store files on the blockchain
-    run:
-      container: ipfs-env
-
-  ipfs-shell:
-    description: Start IPFS to store files on the blockchain
-    run:
-      container: ipfs-env
-      command: /bin/sh
+      container: build-env
+      command: yarn test

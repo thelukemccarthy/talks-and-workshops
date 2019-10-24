@@ -24,9 +24,9 @@ I recommend using Batect and Docker setup as it
 
 ## Setup for Both Batect and Local
 1. Checkout the workshop code 
-    ```git clone --depth 1 --filter=blob:none --no-checkout "git@github.com:thelukemccarthy/talks-and-workshops.git" blockchain; cd blockchain; git checkout master -- blockchain-devloper-into/``` 
+    ```git clone --depth 1 --filter=blob:none --no-checkout "git@github.com:thelukemccarthy/talks-and-workshops.git" blockchain; cd blockchain; git checkout master -- blockchain-devloper-intro/``` 
     1. this will create a new directory called ```blockchain```, inside you will find the directory 
-        ```blockchain-devloper-into```
+        ```blockchain-devloper-intro```
 1. Install the MetaMask extension/add-on for one of the following browsers 
     1. [Chrome Extension](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn)
     1. [Firefox Add-on](https://addons.mozilla.org/en-US/firefox/addon/ether-metamask/)
@@ -55,7 +55,7 @@ I recommend using Batect and Docker setup as it
 
 ## Test Batect setup
 1. Open a new terminal 
-1. Change directory to ```blockchain/blockchain-devloper-into/bombproof-blockchain-blog```
+1. Change directory to ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog```
 1. Start the application suite with batect ```./batect website-start```
 1. In a browser go to http://localhost:3000 you should see a very basic blogging website
 1. In a browser go to http://localhost:5001/webui
@@ -121,7 +121,7 @@ If everything worked, skip the local setup and go to [Send some Ether](#send-som
 1. Install Truffle
     1. Open another terminal
     1. Run the command ```yarn global add truffle```
-    1. cd into ```blockchain/blockchain-devloper-into/bombproof-blockchain-blog/smart-contract```
+    1. cd into ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog/smart-contract```
     1. Run the command ```truffle init```
     1. Select yes when asked 'Proceed anyway'
     1. If everything worked you should see the following output
@@ -147,7 +147,7 @@ If everything worked, skip the local setup and go to [Send some Ether](#send-som
     Compiling your contracts...
     ===========================
     > Compiling ./contracts/Migrations.sol
-    > Artifacts written to blockchain/blockchain-devloper-into/bombproof-blockchain-blog/smart-contract/build/contracts
+    > Artifacts written to blockchain/blockchain-devloper-intro/bombproof-blockchain-blog/smart-contract/build/contracts
     > Compiled successfully using:
        - solc: 0.5.8+commit.23d335f2.Emscripten.clang
 
@@ -166,7 +166,7 @@ If everything worked, skip the local setup and go to [Send some Ether](#send-som
 
 ## Test setup running locally
 1. Open another terminal 
-1. Change directory to ```blockchain/blockchain-devloper-into/bombproof-blockchain-blog/website```
+1. Change directory to ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog/website```
 1. Start the website with the command ```yarn start```
 1. In a browser go to http://localhost:3000 You should see a very basic blogging website
 1. If you closed ganache-cli in the setup instructions
@@ -265,9 +265,9 @@ Solidity is statically typed, supports inheritance, libraries and complex user-d
 
 Lets walk through a sample contract as a group, 
 you can find the code in
-``` blockchain/blockchain-devloper-into/sample-smart-contract/contracts ```
+``` blockchain/blockchain-devloper-intro/sample-smart-contract/contracts ```
 you can find the test code in 
-``` blockchain/blockchain-devloper-into/sample-smart-contract/test ``` 
+``` blockchain/blockchain-devloper-intro/sample-smart-contract/test ``` 
 
 You can find the (Docs for Solidity)[https://solidity.readthedocs.io/en/v0.5.12/] on the solidity website
 The (Introduction to Smart Contracts)[https://solidity.readthedocs.io/en/v0.5.12/introduction-to-smart-contracts.html]
@@ -289,11 +289,11 @@ Let's start by storing a blog post on Ethereum
 
 First lets add some dependencies we need
 1. Open a terminal
-1. cd into ```blockchain/blockchain-devloper-into/bombproof-blockchain-blog/smart-contract```
+1. cd into ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog/smart-contract```
 1. Run the command ```yarn add -D truffle-assertions```
 
 Next lets setup our tests
-1. cd into ```blockchain/blockchain-devloper-into/bombproof-blockchain-blog/smart-contract```
+1. cd into ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog/smart-contract```
 1. Run the command ```touch ./test/BlogTest.js```
 1. Run the command ```touch ./contracts/Blog.sol```
 1. Open the file ```./test/BlogTest.js```
@@ -321,11 +321,11 @@ accounts you can use for testing.
 
 Lets run our new test
 For batect
-1. In a terminal cd to ```blockchain/blockchain-devloper-into/bombproof-blockchain-blog```
+1. In a terminal cd to ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog```
 1. Run the command ```./batect truffle-test```
 
 For local
-1. In a terminal cd to ```blockchain/blockchain-devloper-into/bombproof-blockchain-blog/smart-contract```
+1. In a terminal cd to ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog/smart-contract```
 1. Run the command ```truffle test```
 
 The test fails because the smart contract we are trying to test doesn't exist yet
@@ -494,8 +494,118 @@ A final note about returning values using the ABIEncoderV2, you will get the fol
     ^-------------------------------^
 ```
 
-## Connect the website to out Ethereum Smart Contract 
+## Deploying a Smart Contract to dev env
+We now have a very simple smart contract, let's deploy it to our local ganache ethereum blockchain so we can start using
+our smart contract with our blog website.
 
+1. In your IDE create the file ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog/migrations/2_blog_migration.js```
+1. Open ```2_blog_migration.js``` and paste in the following code
+    ```javascript
+        const blog = artifacts.require("./Blog.sol");
+        
+        module.exports = function(deployer) {
+          deployer.deploy(blog);
+        };
+    ```
+   * The above code is used by truffle to import your smart contract and then deploy it to network
+1. Next we need to tell truffle where to deploy our smart contract
+1. In your IDE open the file ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog/smart-contract/truffle-config.js```
+    * You will see the code that truffle created when you ran ```truffle init```
+    * Take a look at the code truffle created, the comments can be helpful when you're getting started
+1. Replace all of the generated code with the following
+    ```javascript
+        module.exports = {
+          networks: {
+            local: {
+             host: "127.0.0.1",     // Localhost (default: none)
+             port: 8545,            // Standard Ethereum port (default: none)
+             network_id: "*",       // Any network (default: none)
+            },
+            batect: {
+              host: "ganache-env",  // hostname setup by batect
+              port: 8545,           // Standard Ethereum port (default: none)
+              network_id: "*",      // Any network (default: none)
+            },
+          },
+        };
+    ```
+    * The code above provides the details of the networks we can deploy to. One called 'local' and the other 'batect'
+1. If running with batect
+    1. In a terminal cd to ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog```
+    1. Run the command ./batect truffle-migrate
+1. If running locally 
+    1. Make sure you have ganache-cli running, if you don't run the command ```ganache-cli --account_keys_path --accounts 10 --deterministic --mnemonic "lion today perfect mosquito actual wait magnet rent all sun unhappy sell"```
+    1. In a terminal cd to ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog/smart-contract```
+    1. Run the command ```truffle migrate --network local```
+**NB, if you close this terminal you will need to deploy your smart contract again, ganache resets its state on each load
+
+If everything worked then you should see out similar to the following
+```
+    Compiling your contracts...
+    ===========================
+    > Compiling ./contracts/Blog.sol
+    > Compiling ./contracts/Migrations.sol
+    
+    > Artifacts written to /code/build/contracts
+    > Compiled successfully using:
+       - solc: 0.5.8+commit.23d335f2.Emscripten.clang
+    
+    Starting migrations...
+    ======================
+    > Network name:    'batect'
+    > Network id:      1571717530857
+    > Block gas limit: 0x6691b7
+        
+    2_blog_migration.js
+    ===================
+    
+       Deploying 'Blog'
+       ----------------
+       > transaction hash:    0xc87c61490403df2954ae7dc1238529d1a1b1cd03139e3285fc7ab81918ed7ef2
+       > Blocks: 0            Seconds: 0
+       > contract address:    0x91CD0FA62aD725958D7c9480722B73b28F985A73
+       > block number:        3
+       > block timestamp:     1571717536
+       > account:             0x12d39CDaACDcd23E4A6a4859B5A0f11cE90b5Fe4
+       > balance:             99.9686656
+       > gas used:            1263304
+       > gas price:           20 gwei
+       > value sent:          0 ETH
+       > total cost:          0.02526608 ETH
+    
+       > Saving migration to chain.
+       > Saving artifacts
+       -------------------------------------
+       > Total cost:          0.02526608 ETH
+    
+    Summary
+    =======
+    > Total deployments:   2
+    > Final cost:          0.03049394 ETH
+    
+    truffle-migrate finished with exit code 0 in 19.0s.
+```
+  
+## Connect the website to out Ethereum Smart Contract 
+Now we've deployed our smart contract it's time to get our website to store the blog posts in our smart contract
+
+First we need to add the web3 package. This is what will talk to the smart contract, it's kind of like fetch but for 
+smart contracts
+1. If you're using batect
+    1. In a terminal cd to ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog```
+    1. Run the command ```./batect website-shell```
+    1. Once the shell starts run the command ```yarn add drizzle-react```
+1. If you have yarn install locally
+    1. In a terminal cd to ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog/webite```
+    1. Once the shell starts run the command ```yarn add drizzle-react```
+    
+Next we need the copy the ABI (Application Binary Interface) file into the website project.
+The ABI is a json file that describes the smart contract, it's something like swagger.
+
+1. Create a new directory called 'abi' in ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog/website/src```
+1. Copy ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog/smart-contract/build/contracts/Blog.json```
+    to the directory you just created
+    
 ## Why you shouldn't store data in Ethereum
 
 (source)[https://itnext.io/build-a-simple-ethereum-interplanetary-file-system-ipfs-react-js-dapp-23ff4914ce4e]
