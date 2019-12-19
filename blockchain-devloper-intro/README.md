@@ -400,9 +400,10 @@ Nothing to surprising here
 * like a function. The order of the arguments should be the same as the order the fields are declared in.
 * Line 19: Add the blog post passed in to the array
 
-Now you have added the title field of a blog post add the following fields. For now use string as the type for all 
-fields and don't forget to add tests.
+Now you have added the title field of a blog post add the following fields. For now use int256 for the id and string as 
+the type for the rest fields and don't forget to add tests.
 ```solidity
+    id
     title
     published
     author
@@ -412,6 +413,7 @@ fields and don't forget to add tests.
 Now all the fields we need have been added let's create a function to return a single blog post. Write the follow test
 ```javascript
    it('given a blog posts has been stored, then getPost should return the blog post', async () => {
+      const expectedId = 0;
       const blogTitle = 'New Blog Post';
       const published = '2019-10-01';
       const author = 'Homer Simpson';
@@ -419,19 +421,21 @@ Now all the fields we need have been added let's create a function to return a s
       await contract.post(blogTitle, published, author, content);
       const result = await contract.getPost(0);
 
-      assert.equal(result[0], blogTitle);
-      assert.equal(result[1], published);
-      assert.equal(result[2], author);
-      assert.equal(result[3], content);
+      assert.equal(result[0], expectedId);
+      assert.equal(result[1], blogTitle);
+      assert.equal(result[2], published);
+      assert.equal(result[3], author);
+      assert.equal(result[4], content);
     });
 ```
 You might have noticed we have multiple asserts and the result is an array.
 This is a limitation of Solidity, as currently it can't return user defined types. 
 Add the following function into Blog.sol to get the tests to pass.
 ```solidity
-    function getPost(uint256 _index) public view returns(string memory, string memory, string memory, string memory) {
+    function getPost(uint256 _index) public view returns(int256 id, string memory, string memory, string memory, string memory) {
         BlogPostData memory blogPost = blogPosts[_index];
         return (
+            blogPost.id,
             blogPost.title,
             blogPost.published,
             blogPost.author,
@@ -442,16 +446,18 @@ Add the following function into Blog.sol to get the tests to pass.
 The above function introduces a few new concepts let's go over them now.
 * Line 1: The view keyword is introduced. This tell the Ethereum data is only read in the contract. Without the view 
     keyword this function would return the blockchain transaction and not the values we expect to see.  
-* Line 1: Solidity can't return user defined types, however it can return mulitple values. Because all of the values in 
+* Line 1: Solidity can't return user defined types, however it can return mulitple values. Because most of the values in 
     BlogPostData are strings we return four strings. What is returned to our test is the following
-    ```json
+    ```
         Result {
-            '0': 'New Blog Post',
-            '1': '2019-10-01',
-            '2': 'Homer Simpson',
-            '3': 'Mmmmmm Donuts', 
+            '0': <BN: 0>,
+            '1': 'New Blog Post',
+            '2': '2019-10-01',
+            '3': 'Homer Simpson',
+            '4': 'Mmmmmm Donuts', 
         }
     ```
+  The zeroth element has a value you might not have expected. BN is an accronym for Big Number
 * Lines 1,2: Use the memory keyword to tell Ethereum to only store values in memory and not on the blockchain
 * Lines 3-8: Return the multiple values, we wrap all the return values in () so Ethereum knows all the values to return
 
@@ -472,11 +478,13 @@ The Solidity code becomes a lot simpler, however what is returned might not be w
 The following is what is returned from the getPosts() function to our Javascript tests
 ```javascript
 [ 
-  [ 
+  [
+    '0', 
     'New Blog Post',
     '2019-10-01',
     'Homer Simpson',
     'Mmmmmm Donuts',
+    id: 0,
     title: 'New Blog Post',
     published: '2019-10-01',
     author: 'Homer Simpson',
@@ -493,6 +501,8 @@ A final note about returning values using the ABIEncoderV2, you will get the fol
     pragma experimental ABIEncoderV2;
     ^-------------------------------^
 ```
+
+# CAN I WRITE TO BlogPostData[] public blogPosts; GIVEN IT IS DECLARED PUBLIC
 
 ## Deploying a Smart Contract to dev env
 We now have a very simple smart contract, let's deploy it to our local ganache ethereum blockchain so we can start using
@@ -514,28 +524,28 @@ our smart contract with our blog website.
     * Take a look at the code truffle created, the comments can be helpful when you're getting started
 1. Replace all of the generated code with the following
     ```javascript
-        module.exports = {
-          networks: {
-            local: {
-             host: "127.0.0.1",     // Localhost (default: none)
-             port: 8545,            // Standard Ethereum port (default: none)
-             network_id: "*",       // Any network (default: none)
-            },
-            batect: {
-              host: "ganache-env",  // hostname setup by batect
-              port: 8545,           // Standard Ethereum port (default: none)
-              network_id: "*",      // Any network (default: none)
-            },
+      module.exports = {
+        networks: {
+          local: {
+           host: "127.0.0.1",     // Localhost (default: none)
+           port: 8545,            // Standard Ethereum port (default: none)
+           network_id: "*",       // Any network (default: none)
           },
-        };
+          batect: {
+            host: "ganache-env",  // hostname setup by batect
+            port: 8545,           // Standard Ethereum port (default: none)
+            network_id: "*",      // Any network (default: none)
+          },
+        },
+      };
     ```
-    * The code above provides the details of the networks we can deploy to. One called 'local' and the other 'batect'
+    * The code above provides the details of the networks we can deploy to. One is called 'local' and the other 'batect'
 1. If running with batect
     1. In a terminal cd to ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog```
     1. Run the command ./batect truffle-migrate
 1. If running locally 
     1. Make sure you have ganache-cli running, if you don't run the command ```ganache-cli --account_keys_path --accounts 10 --deterministic --mnemonic "lion today perfect mosquito actual wait magnet rent all sun unhappy sell"```
-    1. In a terminal cd to ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog/smart-contract```
+    1. In a new terminal cd to ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog/smart-contract```
     1. Run the command ```truffle migrate --network local```
 **NB, if you close this terminal you will need to deploy your smart contract again, ganache resets its state on each load
 
@@ -601,11 +611,34 @@ smart contracts
     
 Next we need the copy the ABI (Application Binary Interface) file into the website project.
 The ABI is a json file that describes the smart contract, it's something like swagger.
+We could copy this manually but any changes to the smart contract would require us to copy the ABI file again. Instead
+Will we setup truffle to compile into a directory that React will allow access to.
 
-1. Create a new directory called 'abi' in ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog/website/src```
-1. Copy ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog/smart-contract/build/contracts/Blog.json```
-    to the directory you just created
-    
+1. Open ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog/smart-contract/truffle-config.js```
+1. Under ```module.exports = {```  paste in the follow ```contracts_build_directory: "../website/src/abi/"```
+
+Your truffle-config.js should now look like the following
+
+```javascript
+module.exports = {
+  contracts_build_directory: "../website/src/abi/",
+  networks: {
+    local: {
+     host: "127.0.0.1",     // Localhost (default: none)
+     port: 7545,            // Standard Ethereum port (default: none)
+     network_id: "*",       // Any network (default: none)
+    },
+    batect: {
+      host: "ganache-env",  // hostname setup by batect
+      port: 8545,           // Standard Ethereum port (default: none)
+      network_id: "*",      // Any network (default: none)
+    },
+  },
+};
+```
+
+
+
 ## Why you shouldn't store data in Ethereum
 
 (source)[https://itnext.io/build-a-simple-ethereum-interplanetary-file-system-ipfs-react-js-dapp-23ff4914ce4e]
@@ -624,4 +657,23 @@ The ABI is a json file that describes the smart contract, it's something like sw
 ## Host website on IPFS
 
 ## Hacks and Security
- 
+
+
+# Connecting a docker container to an existing network
+The following is useful to connect the truffle-shell container to the ganache-env.
+This is due to the fact that batect doesn't allow you to specify a network to connect to
+
+``` docker network connect <Docker Network Id (bridge)> <Running Container Id> ``` 
+
+Get the network id
+    1. ```docker network prune```
+    1. ```docker network ls```
+    1. Note the current networks
+    1. ```./batect <task name>```
+    1. ```docker network ls```
+    1. Find the new network created and note the id
+
+Get the container id
+    1. ```./batect <task 2 name>```
+    1. ```docker ps```    
+    1. Note the id of the contain
