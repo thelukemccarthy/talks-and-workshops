@@ -7,7 +7,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint src/**/*.js --ignore-pattern node_modules/"
+    "lint": "eslint src/**/*.js --fix --ignore-pattern node_modules/"
   },
   "dependencies": {
     "drizzle": "^1.4.0",
