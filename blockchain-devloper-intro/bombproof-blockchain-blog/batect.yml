@@ -22,9 +22,9 @@ containers:
   truffle-env:
     build_directory: ./.batect/truffle
     volumes:
-      - local: ./smart-contract
+      - local: ./
         container: /code
-    working_directory: /code
+    working_directory: /code/smart-contract
 
   ipfs-env:
     image: ipfs/go-ipfs
@@ -82,6 +82,13 @@ tasks:
     run:
       container: truffle-env
       command: truffle compile
+
+  truffle-console:
+    description: Truffle console for debugging smart contacts
+    group: shell
+    run:
+      container: truffle-env
+      command: truffle console --network batect
 
   truffle-migrate:
     description: Deploy the smart contract to the ganache-env container
