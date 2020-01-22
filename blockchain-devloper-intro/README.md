@@ -599,7 +599,7 @@ If everything worked then you should see out similar to the following
 ## Connect the website to out Ethereum Smart Contract 
 Now we've deployed our smart contract it's time to get our website to store the blog posts in our smart contract
 
-First we need to add the web3 package. This is what will talk to the smart contract, it's kind of like fetch but for 
+First we need to add the drizzle package. This is what will talk to the smart contract, it's kind of like fetch but for 
 smart contracts
 1. If you're using batect
     1. In a terminal cd to ```blockchain/blockchain-devloper-intro/bombproof-blockchain-blog```
